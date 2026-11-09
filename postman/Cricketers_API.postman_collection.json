@@ -1,0 +1,223 @@
+{
+  "info": {
+    "name": "Cricketers CRUD REST API",
+    "description": "Postman tests for Create, Read, Update, Delete, validation, and not-found cases.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/cricketers"
+    },
+    {
+      "key": "createdId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Create valid cricketer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201 Created', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Response is JSON with an id', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data).to.have.property('id');",
+              "  pm.expect(data.name).to.eql('Shaheen Afridi');",
+              "  pm.collectionVariables.set('createdId', String(data.id));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Shaheen Afridi\",\n  \"country\": \"Pakistan\",\n  \"role\": \"Bowler\",\n  \"battingStyle\": \"Left-hand\",\n  \"matches\": 53,\n  \"runs\": 196\n}"
+        },
+        "url": "{{baseUrl}}"
+      }
+    },
+    {
+      "name": "02 Get all cricketers",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response is a JSON array', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data).to.be.an('array');",
+              "  pm.expect(data.length).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}"
+      }
+    },
+    {
+      "name": "03 Get cricketer by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Returned id matches request', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(String(data.id)).to.eql(pm.collectionVariables.get('createdId'));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{createdId}}"
+      }
+    },
+    {
+      "name": "04 Update cricketer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Runs were updated', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data.runs).to.eql(250);",
+              "  pm.expect(data.matches).to.eql(55);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Shaheen Afridi\",\n  \"country\": \"Pakistan\",\n  \"role\": \"Bowler\",\n  \"battingStyle\": \"Left-hand\",\n  \"matches\": 55,\n  \"runs\": 250\n}"
+        },
+        "url": "{{baseUrl}}/{{createdId}}"
+      }
+    },
+    {
+      "name": "05 Create with missing fields",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400 Bad Request', function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Validation details are present', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data.error).to.eql('Validation Error');",
+              "  pm.expect(data.details).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Incomplete Player\"\n}"
+        },
+        "url": "{{baseUrl}}"
+      }
+    },
+    {
+      "name": "06 Get nonexistent id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 404 Not Found', function () {",
+              "  pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/99999"
+      }
+    },
+    {
+      "name": "07 Delete cricketer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Deleted record is returned', function () {",
+              "  const data = pm.response.json();",
+              "  pm.expect(data.deleted).to.have.property('id');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/{{createdId}}"
+      }
+    },
+    {
+      "name": "08 Get deleted cricketer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Deleted record returns 404', function () {",
+              "  pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/{{createdId}}"
+      }
+    }
+  ]
+}
