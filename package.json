@@ -1,18 +1,27 @@
 {
   "name": "cricketers-crud-rest-api",
   "version": "1.0.0",
-  "description": "CRUD REST API for managing cricketer records using Express and SQLite",
+  "description": "CRUD REST API for managing cricketer records using Express and MongoDB",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js"
   },
-  "keywords": ["rest", "api", "crud", "express", "sqlite", "cricketers"],
+  "keywords": [
+    "rest",
+    "api",
+    "crud",
+    "express",
+    "mongodb",
+    "mongoose",
+    "cricketers"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
-    "sql.js": "^1.12.0"
+    "mongoose": "^8.24.8"
   }
 }

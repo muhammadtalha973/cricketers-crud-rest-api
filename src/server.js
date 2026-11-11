@@ -1,15 +1,15 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
-const { initDatabase } = require("./db");
-const { createController } = require("./controllers/cricketersController");
-const { createCricketersRouter } = require("./routes/cricketers");
+const { connectDatabase, MONGODB_URI } = require("./db");
+const cricketersRouter = require("./routes/cricketers");
 const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-  const database = await initDatabase();
-  const controller = createController(database);
+  await connectDatabase();
 
   const app = express();
   app.use(cors());
@@ -19,6 +19,7 @@ async function start() {
     res.status(200).json({
       name: "Cricketers CRUD REST API",
       version: "1.0.0",
+      database: "MongoDB",
       baseUrl: `http://localhost:${PORT}/api/cricketers`,
       endpoints: {
         list: "GET /api/cricketers",
@@ -30,12 +31,13 @@ async function start() {
     });
   });
 
-  app.use("/api/cricketers", createCricketersRouter(controller));
+  app.use("/api/cricketers", cricketersRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Cricketers API running at http://localhost:${PORT}`);
+    console.log(`MongoDB: ${MONGODB_URI}`);
     console.log(`Base URL: http://localhost:${PORT}/api/cricketers`);
   });
 }

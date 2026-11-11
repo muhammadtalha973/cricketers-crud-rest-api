@@ -8,7 +8,7 @@ A database-connected REST API for managing cricketer records. The API supports C
 
 | Attribute     | Type    | Required | Description                                      |
 |---------------|---------|----------|--------------------------------------------------|
-| id            | integer | auto     | Unique database ID                               |
+| id            | string  | auto     | MongoDB ObjectId, returned as `id`               |
 | name          | string  | yes      | Player name                                      |
 | country       | string  | yes      | National team                                    |
 | role          | string  | yes      | `Batsman`, `Bowler`, `All-rounder`, or `Wicket-keeper` |
@@ -20,10 +20,14 @@ A database-connected REST API for managing cricketer records. The API supports C
 
 - Node.js
 - Express.js
-- SQLite (via `sql.js`, stored in `data/cricketers.db`)
+- MongoDB with Mongoose
 - Postman for API testing
 
 ## How to run
+
+1. Make sure **MongoDB** is installed and running (this project uses `mongodb://127.0.0.1:27017/cricketers_api`).
+2. Copy `.env.example` to `.env` if you need a custom connection string.
+3. Install and start:
 
 ```bash
 npm install
@@ -77,11 +81,13 @@ Error status codes:
 
 ### Read one
 
-`GET http://localhost:3000/api/cricketers/1`
+`GET http://localhost:3000/api/cricketers/<mongodb-id>`
+
+Use the `id` returned by POST (a 24-character MongoDB ObjectId), not `1`.
 
 ### Update
 
-`PUT http://localhost:3000/api/cricketers/1`
+`PUT http://localhost:3000/api/cricketers/<mongodb-id>`
 
 ```json
 {
@@ -96,9 +102,9 @@ Error status codes:
 
 ### Delete
 
-`DELETE http://localhost:3000/api/cricketers/1`
+`DELETE http://localhost:3000/api/cricketers/<mongodb-id>`
 
-After deleting, `GET /api/cricketers/1` should return `404 Not Found`.
+After deleting, GET for the same id should return `404 Not Found`.
 
 ## Postman
 

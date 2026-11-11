@@ -1,4 +1,5 @@
-const ALLOWED_ROLES = ["Batsman", "Bowler", "All-rounder", "Wicket-keeper"];
+const mongoose = require("mongoose");
+const { ALLOWED_ROLES } = require("../models/Cricketer");
 
 function isNonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -8,22 +9,18 @@ function isNonNegativeInteger(value) {
   return Number.isInteger(value) && value >= 0;
 }
 
-function validateCricketer(body, { partial = false } = {}) {
+function validateCricketer(body) {
   const errors = [];
 
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return ["Request body must be a JSON object."];
   }
 
-  const required = ["name", "country", "role"];
-
-  if (!partial) {
-    required.forEach((field) => {
-      if (body[field] === undefined) {
-        errors.push(`"${field}" is required.`);
-      }
-    });
-  }
+  ["name", "country", "role"].forEach((field) => {
+    if (body[field] === undefined) {
+      errors.push(`"${field}" is required.`);
+    }
+  });
 
   if (body.name !== undefined && !isNonEmptyString(body.name)) {
     errors.push('"name" must be a non-empty string.');
@@ -57,11 +54,16 @@ function validateCricketer(body, { partial = false } = {}) {
 }
 
 function parseId(value) {
-  const id = Number(value);
-  if (!Number.isInteger(id) || id <= 0) {
+  if (typeof value !== "string" || !mongoose.Types.ObjectId.isValid(value)) {
     return null;
   }
-  return id;
+
+  const objectId = new mongoose.Types.ObjectId(value);
+  if (String(objectId) !== value) {
+    return null;
+  }
+
+  return objectId;
 }
 
 module.exports = { validateCricketer, parseId, ALLOWED_ROLES };

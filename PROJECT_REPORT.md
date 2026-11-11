@@ -35,13 +35,13 @@ The chosen entity is **Cricketer**. A cricketer record represents a player who c
 
 | Attribute      | Data type | Required | Notes |
 |----------------|-----------|----------|--------|
-| `id`           | INTEGER   | auto     | Primary key, assigned by the database |
-| `name`         | TEXT      | yes      | Player name |
-| `country`      | TEXT      | yes      | National team |
-| `role`         | TEXT      | yes      | `Batsman`, `Bowler`, `All-rounder`, or `Wicket-keeper` |
-| `battingStyle` | TEXT      | no       | Stored as `batting_style` in the database |
-| `matches`      | INTEGER   | no       | Defaults to `0` |
-| `runs`         | INTEGER   | no       | Defaults to `0` |
+| `id`           | ObjectId / string | auto | MongoDB `_id`, returned in JSON as `id` |
+| `name`         | String            | yes  | Player name |
+| `country`      | String            | yes  | National team |
+| `role`         | String            | yes  | `Batsman`, `Bowler`, `All-rounder`, or `Wicket-keeper` |
+| `battingStyle` | String            | no   | For example `Right-hand` |
+| `matches`      | Number            | no   | Defaults to `0` |
+| `runs`         | Number            | no   | Defaults to `0` |
 
 ---
 
@@ -51,32 +51,39 @@ The chosen entity is **Cricketer**. A cricketer record represents a player who c
 |------|--------|
 | Language | JavaScript (Node.js) |
 | Framework | Express.js |
-| Database | SQLite file `data/cricketers.db` |
-| SQLite library | `sql.js` (file-backed SQLite, no extra database server) |
+| Database | MongoDB (`cricketers_api` database, `cricketers` collection) |
+| ODM | Mongoose |
 | Testing | Postman |
 | Version control | Git and GitHub |
 
-The API does not require MySQL, PostgreSQL, or MongoDB to be installed. SQLite stores all records in a local file so data survives server restarts.
+MongoDB Community Server runs locally. The API connects with `mongodb://127.0.0.1:27017/cricketers_api`. Records persist until they are deleted.
 
 ---
 
 ## 4. Database design and schema
 
-```sql
-CREATE TABLE IF NOT EXISTS cricketers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  country TEXT NOT NULL,
-  role TEXT NOT NULL,
-  batting_style TEXT,
-  matches INTEGER NOT NULL DEFAULT 0,
-  runs INTEGER NOT NULL DEFAULT 0
-);
+**Database:** `cricketers_api`  
+**Collection:** `cricketers`
+
+Sample document:
+
+```json
+{
+  "_id": "ObjectId",
+  "name": "Babar Azam",
+  "country": "Pakistan",
+  "role": "Batsman",
+  "battingStyle": "Right-hand",
+  "matches": 120,
+  "runs": 5729
+}
 ```
 
-On first startup the API seeds three sample records (Babar Azam, Virat Kohli, Jos Buttler) so GET requests can be demonstrated immediately.
+Mongoose schema fields: `name` (required string), `country` (required string), `role` (required enum), `battingStyle` (optional string), `matches` and `runs` (non-negative numbers, default 0). MongoDB assigns `_id` automatically. The API maps `_id` to `id` in JSON responses.
 
-**ER-style description:** one table, `cricketers`. Each row is uniquely identified by `id`. There are no foreign keys because this project manages a single entity.
+On first startup the API seeds three sample records (Babar Azam, Virat Kohli, Jos Buttler) if the collection is empty.
+
+**ER-style description:** one collection, `cricketers`. Each document is uniquely identified by `_id`. There are no related collections because this project manages a single entity.
 
 ---
 
@@ -153,7 +160,7 @@ Import `postman/Cricketers_API.postman_collection.json` and run the requests whi
 | T4 | Update an existing record | PUT `/api/cricketers/{id}` | 200, updated fields | | |
 | T5 | Delete an existing record | DELETE `/api/cricketers/{id}` | 200, deleted object | | |
 | T6 | Omit required fields | POST `/api/cricketers` with only `name` | 400, validation details | | |
-| T7 | Nonexistent ID | GET `/api/cricketers/99999` | 404 | | |
+| T7 | Nonexistent ID | GET `/api/cricketers/000000000000000000000000` | 404 | | |
 | T8 | Get after delete | GET same id as T5 | 404 | | |
 
 ### How each test was performed
@@ -172,7 +179,7 @@ Import `postman/Cricketers_API.postman_collection.json` and run the requests whi
 | Missing `name`, `country`, or `role` | 400 | `{ "error": "Validation Error", "details": [...] }` |
 | Invalid `role` (not in the allowed list) | 400 | Validation error |
 | Negative `matches` or `runs` | 400 | Validation error |
-| Non-integer ID | 400 | `"Cricketer ID must be a positive integer."` |
+| Invalid ObjectId (for example `abc` or `99999`) | 400 | `"Cricketer ID must be a valid MongoDB ObjectId."` |
 | ID that does not exist | 404 | `"No cricketer found with id ..."` |
 | Malformed JSON body | 400 | `"Request body must be valid JSON."` |
 | Unknown URL | 404 | No matching route |
@@ -183,7 +190,7 @@ Import `postman/Cricketers_API.postman_collection.json` and run the requests whi
 
 **Results**
 
-- All four CRUD operations work against SQLite.
+- All four CRUD operations work against MongoDB.
 - Successful creates return **201**.
 - Successful reads, updates, and deletes return **200**.
 - Missing records return **404**.
@@ -192,7 +199,7 @@ Import `postman/Cricketers_API.postman_collection.json` and run the requests whi
 
 **Identified issues**
 
-- SQLite file locking is not a concern for this single-user demo, but a production API would use a server database and connection pooling.
+- MongoDB ObjectIds are 24-character hex strings, so Postman tests must use the `id` returned by POST rather than `1`.
 - PUT requires the full record (not a partial PATCH). That matches the assignment’s replace-style update.
 
 **Conclusion**
