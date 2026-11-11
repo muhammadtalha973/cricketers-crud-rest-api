@@ -210,7 +210,7 @@ The project meets the PBL requirements: a database-backed REST API, JSON exchang
 
 ## 9. GitHub repository link
 
-_[Paste the public GitHub URL here, for example https://github.com/your-username/cricketers-crud-rest-api]_
+https://github.com/muhammadtalha973/cricketers-crud-rest-api
 
 ---
 
