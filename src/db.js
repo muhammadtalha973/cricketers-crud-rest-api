@@ -30,7 +30,12 @@ const SEED_PLAYERS = [
   }
 ];
 
+function safeMongoUri(uri) {
+  return uri.replace(/\/\/([^:@/]+):([^@/]+)@/, "//$1:***@");
+}
+
 async function connectDatabase() {
+  mongoose.set("strictQuery", true);
   await mongoose.connect(MONGODB_URI);
 
   const count = await Cricketer.countDocuments();
@@ -40,4 +45,4 @@ async function connectDatabase() {
   }
 }
 
-module.exports = { connectDatabase, MONGODB_URI };
+module.exports = { connectDatabase, MONGODB_URI, safeMongoUri };
