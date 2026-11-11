@@ -20,13 +20,15 @@ A database-connected REST API for managing cricketer records. The API supports C
 
 - Node.js
 - Express.js
-- MongoDB with Mongoose
+- MongoDB Atlas free cluster (M0) with Mongoose
 - Postman for API testing
+
+The assignment is demonstrated on this computer at `http://localhost:3000`. A public host such as Render is not required.
 
 ## How to run
 
-1. Make sure **MongoDB** is installed and running (this project uses `mongodb://127.0.0.1:27017/cricketers_api`).
-2. Copy `.env.example` to `.env` if you need a custom connection string.
+1. Copy `.env.example` to `.env`.
+2. Set `MONGODB_URI` to the free Atlas cluster connection string (database name `cricketers_api`).
 3. Install and start:
 
 ```bash
@@ -42,7 +44,9 @@ Base URL:
 http://localhost:3000/api/cricketers
 ```
 
-On first run, three sample players are inserted so you can test GET immediately.
+The API stores records in the Atlas database `cricketers_api`, collection `cricketers`. On first connection to an empty collection, three sample players are inserted so you can test GET immediately.
+
+View the same records in MongoDB Compass by connecting to that Atlas cluster and opening `cricketers_api` → `cricketers`.
 
 ## Endpoints
 
@@ -115,13 +119,4 @@ After deleting, GET for the same id should return `404 Not Found`.
 
 ## GitHub
 
-```bash
-git init
-git add .
-git commit -m "Add Cricketers CRUD REST API"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
-```
-
-Replace `YOUR_USERNAME` and `YOUR_REPO` with your GitHub account and repository name. Put that repository URL in the project report.
+https://github.com/muhammadtalha973/cricketers-crud-rest-api

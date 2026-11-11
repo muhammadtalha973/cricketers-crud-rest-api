@@ -51,12 +51,12 @@ The chosen entity is **Cricketer**. A cricketer record represents a player who c
 |------|--------|
 | Language | JavaScript (Node.js) |
 | Framework | Express.js |
-| Database | MongoDB (`cricketers_api` database, `cricketers` collection) |
+| Database | MongoDB Atlas free cluster **Cluster0** (M0), database `cricketers_api`, collection `cricketers` |
 | ODM | Mongoose |
-| Testing | Postman |
+| Testing | Postman against `http://localhost:3000` |
 | Version control | Git and GitHub |
 
-MongoDB Community Server runs locally. The API connects with `mongodb://127.0.0.1:27017/cricketers_api`. Records persist until they are deleted.
+The API runs on this computer. It connects to the free Atlas cluster through `MONGODB_URI` in `.env`. Records stay in Atlas until they are deleted. A cloud host such as Render is not part of this submission, because the assignment is demonstrated locally with Postman.
 
 ---
 
@@ -204,7 +204,7 @@ Tests were executed against `http://localhost:3000/api/cricketers` with the API 
 
 **Conclusion**
 
-The project meets the PBL requirements: a database-backed REST API, JSON exchange, CRUD endpoints, HTTP status codes, error handling, and Postman testing. The source code is on GitHub, and the running API is demonstrated in the presentation video.
+The project meets the PBL requirements: a database-backed REST API, JSON exchange, CRUD endpoints, HTTP status codes, error handling, and Postman testing on localhost. Data is stored in the free MongoDB Atlas cluster. The source code is on GitHub. The presentation video still needs to be recorded and linked below.
 
 ---
 
@@ -223,7 +223,7 @@ _[Paste an accessible video URL here, for example a Google Drive, YouTube, or un
 Use this list while recording. The GitHub repository is already public.
 
 - [ ] Purpose of the project and why Cricketer was chosen
-- [ ] MongoDB connection and stored records (`cricketers_api`)
+- [ ] MongoDB Atlas free cluster and stored records (`cricketers_api` → `cricketers`)
 - [ ] POST, GET all, GET one, PUT, DELETE in Postman
 - [ ] JSON request and response bodies
 - [ ] Status codes and at least one error case (400 or 404)
@@ -241,4 +241,4 @@ npm install
 npm start
 ```
 
-Then open Postman and import `postman/Cricketers_API.postman_collection.json`.
+Create a `.env` file with `PORT=3000` and `MONGODB_URI` set to the free Atlas connection string for database `cricketers_api`. Then open Postman and import `postman/Cricketers_API.postman_collection.json`. Use `http://localhost:3000/api/cricketers`.
