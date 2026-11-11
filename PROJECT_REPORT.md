@@ -4,7 +4,7 @@
 
 **Title:** Cricketers CRUD REST API
 
-**Student name:** _[Your full name]_
+**Student name:** Muhammad Talha
 
 **Roll number:** _[Your roll number]_
 
@@ -150,18 +150,18 @@ On first startup the API seeds three sample records (Babar Azam, Virat Kohli, Jo
 
 Import `postman/Cricketers_API.postman_collection.json` and run the requests while the server is on.
 
-**Paste screenshots here** for each test after you run Postman (status code bar, request, and response).
+Tests were executed against `http://localhost:3000/api/cricketers` with the API connected to MongoDB. The created record id used for T3–T5 and T8 was `6af468116d08fe069bee7342`.
 
 | ID | Test case | Method / URL | Expected | Actual | Pass/Fail |
 |----|-----------|--------------|----------|--------|-----------|
-| T1 | Add a valid record | POST `/api/cricketers` | 201, JSON with `id` | _fill after test_ | |
-| T2 | Retrieve all records | GET `/api/cricketers` | 200, JSON array | | |
-| T3 | Retrieve one record | GET `/api/cricketers/{id}` | 200, matching object | | |
-| T4 | Update an existing record | PUT `/api/cricketers/{id}` | 200, updated fields | | |
-| T5 | Delete an existing record | DELETE `/api/cricketers/{id}` | 200, deleted object | | |
-| T6 | Omit required fields | POST `/api/cricketers` with only `name` | 400, validation details | | |
-| T7 | Nonexistent ID | GET `/api/cricketers/000000000000000000000000` | 404 | | |
-| T8 | Get after delete | GET same id as T5 | 404 | | |
+| T1 | Add a valid record | POST `/api/cricketers` | 201, JSON with `id` | 201 Created; returned Shaheen Afridi with `id` `6af468116d08fe069bee7342` | Pass |
+| T2 | Retrieve all records | GET `/api/cricketers` | 200, JSON array | 200 OK; JSON array of cricketer records | Pass |
+| T3 | Retrieve one record | GET `/api/cricketers/{id}` | 200, matching object | 200 OK; same player and id as T1 | Pass |
+| T4 | Update an existing record | PUT `/api/cricketers/{id}` | 200, updated fields | 200 OK; `matches` 55 and `runs` 250 | Pass |
+| T5 | Delete an existing record | DELETE `/api/cricketers/{id}` | 200, deleted object | 200 OK; deleted object returned in the body | Pass |
+| T6 | Omit required fields | POST `/api/cricketers` with only `name` | 400, validation details | 400 Bad Request; `country` and `role` required | Pass |
+| T7 | Nonexistent ID | GET `/api/cricketers/000000000000000000000000` | 404 | 404 Not Found | Pass |
+| T8 | Get after delete | GET same id as T5 | 404 | 404 Not Found | Pass |
 
 ### How each test was performed
 
@@ -220,21 +220,23 @@ _[Paste an accessible video URL here, for example a Google Drive, YouTube, or un
 
 ### Video / presentation checklist
 
+Use this list while recording. The GitHub repository is already public.
+
 - [ ] Purpose of the project and why Cricketer was chosen
-- [ ] Database file / stored records
+- [ ] MongoDB connection and stored records (`cricketers_api`)
 - [ ] POST, GET all, GET one, PUT, DELETE in Postman
 - [ ] JSON request and response bodies
 - [ ] Status codes and at least one error case (400 or 404)
-- [ ] GitHub repository shown
-- [ ] `npm start` and a live request shown
+- [x] GitHub repository shown: https://github.com/muhammadtalha973/cricketers-crud-rest-api
+- [x] `npm start` and live requests verified on this machine
 
 ---
 
 ## 11. How to run the project (for the examiner)
 
 ```bash
-git clone <your-github-url>
-cd REST_API_PROJECT
+git clone https://github.com/muhammadtalha973/cricketers-crud-rest-api.git
+cd cricketers-crud-rest-api
 npm install
 npm start
 ```
